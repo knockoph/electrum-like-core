@@ -1,3 +1,5 @@
+find_package(Boost REQUIRED)
 add_executable(elc-cc coreclient/main.cpp)
-target_link_libraries(elc-cc univalue)
+include_directories(${Boost_INCLUDE_DIRS})
+target_link_libraries(elc-cc univalue ${Boost_LIBRARIES})
 add_subdirectory(univalue)

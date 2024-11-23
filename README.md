@@ -8,7 +8,7 @@ Install on Ubuntu 24.04:
 
 ```bash
 sudo apt update
-sudo apt install build-essential cmake
+sudo apt install build-essential cmake libboost-dev
 ```
 
 ## Build and Run
