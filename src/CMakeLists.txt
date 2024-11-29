@@ -1,6 +1,6 @@
 find_package(Boost REQUIRED)
 message("Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
 include_directories(${Boost_INCLUDE_DIRS})
-add_executable(elc-cc coreclient/main.cpp)
+add_executable(elc-cc coreclient/main.cpp utils.cpp rpc/rpcclient.cpp)
 target_link_libraries(elc-cc univalue)
 add_subdirectory(univalue)
