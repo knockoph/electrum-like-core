@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-cmake -B build/ && cmake --build build/ && ./build/src/elc-cc
+cmake -B build/ && cmake --build build/ && ./build/src/elc-dev
