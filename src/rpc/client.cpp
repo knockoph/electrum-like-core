@@ -1,7 +1,7 @@
 #include <iostream>
 #include <boost/beast/core/detail/base64.hpp>
 #include <boost/beast/http.hpp>
-#include "rpcclient.h"
+#include "client.h"
 
 
 std::string base64_encode(const std::string& input) {

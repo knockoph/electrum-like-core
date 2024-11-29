@@ -3,7 +3,7 @@
 #include <tuple>
 #include <univalue.h>
 #include "../utils.h"
-#include "../rpc/rpcclient.h"
+#include "../rpc/client.h"
 
 
 int main() {
