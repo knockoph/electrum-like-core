@@ -1,6 +1,14 @@
+# ide
 .vscode
 settings.json
+
+# build
 build
 main
 CMakeCache.txt
 CMakeFiles/
+
+# python
+.pytest_cache
+__pycache__
+

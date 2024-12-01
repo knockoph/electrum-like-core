@@ -7,7 +7,7 @@
 #include <univalue.h>
 
 
-struct RpcSettings {
+struct RpcClientSettings {
     const std::string& host;
     const std::string& port;
     const std::string& username;
@@ -17,13 +17,13 @@ struct RpcSettings {
 
 class RpcClient {
 private:
-    RpcSettings settings;
-    boost::asio::io_context io_context;
-    boost::asio::ip::tcp::resolver resolver;
-    boost::beast::tcp_stream stream;
+    RpcClientSettings settings_;
+    boost::asio::io_context io_context_;
+    boost::asio::ip::tcp::resolver resolver_;
+    boost::beast::tcp_stream stream_;
 
 public:
-    RpcClient(const RpcSettings& rpc_settings);
+    RpcClient(const RpcClientSettings& settings);
     ~RpcClient();
     UniValue request(const std::string& method, const UniValue params);
 };

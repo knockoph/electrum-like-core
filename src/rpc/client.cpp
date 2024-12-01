@@ -4,18 +4,22 @@
 #include "client.h"
 
 
+namespace beast = boost::beast;
+namespace http = beast::http;
+
+
 std::string base64_encode(const std::string& input) {
-    std::size_t output_length = boost::beast::detail::base64::encoded_size(input.size());
+    std::size_t output_length = beast::detail::base64::encoded_size(input.size());
     std::string output;
     output.resize(output_length);
-    boost::beast::detail::base64::encode(output.data(), input.data(), input.size());
+    beast::detail::base64::encode(output.data(), input.data(), input.size());
     return output;
 }
 
 
-RpcClient::RpcClient(const RpcSettings& rpc_settings): settings{rpc_settings}, resolver{io_context}, stream{io_context} {
+RpcClient::RpcClient(const RpcClientSettings& settings): settings_{settings}, resolver_{io_context_}, stream_{io_context_} {
     try {
-        boost::asio::connect(stream.socket(), resolver.resolve(settings.host, settings.port));
+        boost::asio::connect(stream_.socket(), resolver_.resolve(settings_.host, settings_.port));
     } catch (const boost::system::system_error& e) {
         throw std::runtime_error("Could not connect to rpc server");
     }
@@ -23,18 +27,16 @@ RpcClient::RpcClient(const RpcSettings& rpc_settings): settings{rpc_settings}, r
 
 
 RpcClient::~RpcClient() {
-    boost::beast::error_code ec;
-    stream.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+    beast::error_code ec;
+    stream_.socket().shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
 
-    // if (ec && ec != boost::beast::errc::not_connected) {
+    // if (ec && ec != beast::errc::not_connected) {
     //     throw std::runtime_error("Could not shutdown socket");
     // }
 }
 
 
 UniValue RpcClient::request(const std::string& method, const UniValue params) {
-    namespace http = boost::beast::http;
-
     UniValue data {UniValue::VOBJ};
     data.pushKV("jsonrpc", "2.0");
     data.pushKV("id", "curltest");
@@ -45,17 +47,17 @@ UniValue RpcClient::request(const std::string& method, const UniValue params) {
     std::cout << payload << "\n";
 
     http::request<http::string_body> req{http::verb::post, "/", 11};
-    req.set(http::field::host, settings.host);
+    req.set(http::field::host, settings_.host);
     req.set(http::field::content_type, "application/json");
-    auto encoded_auth = base64_encode(settings.username + ":" + settings.password);
+    auto encoded_auth = base64_encode(settings_.username + ":" + settings_.password);
     req.set(http::field::authorization, "Basic " + encoded_auth);
     req.body() = payload;
     req.prepare_payload();
 
-    http::write(stream, req);
-    boost::beast::flat_buffer buffer;
+    http::write(stream_, req);
+    beast::flat_buffer buffer;
     http::response<http::string_body> res;
-    http::read(stream, buffer, res);
+    http::read(stream_, buffer, res);
 
     if (res.result() != http::status::ok) {
         std::string error_code {std::to_string(static_cast<unsigned int>(res.result()))};

@@ -8,7 +8,7 @@
 
 int main() {
     auto [username, password] = read_cookie();
-    RpcSettings settings {"localhost", "18443", username, password};
+    RpcClientSettings settings {"localhost", "18443", username, password};
     RpcClient client {settings};
 
     std::vector<int> v {};
