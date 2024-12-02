@@ -15,6 +15,13 @@ void accept_handler(const boost::system::error_code& error, boost::asio::ip::tcp
 }
 
 
+asio::ip::tcp::endpoint make_endpoint(const std::string& host, short unsigned int port) {
+    auto address = asio::ip::make_address(host);
+    asio::ip::port_type port_type {port};
+    return {address, port_type};
+}
+
+
 struct RpcServerSettings {
     const std::string& host;
     short unsigned int port;
@@ -25,18 +32,10 @@ class RpcServer {
 private:
     RpcServerSettings settings_;
     asio::io_context io_context_;
-    asio::ip::address address_;
-    asio::ip::port_type port_type_;
-    asio::ip::tcp::endpoint endpoint_;
     asio::ip::tcp::acceptor acceptor_;
 
 public:
-    RpcServer(const RpcServerSettings& settings):
-    settings_{settings},
-    address_{asio::ip::make_address(settings_.host)},
-    port_type_{settings.port},
-    endpoint_{address_, port_type_},
-    acceptor_{io_context_, endpoint_} {
+    RpcServer(const RpcServerSettings& settings): settings_{settings}, acceptor_{io_context_, make_endpoint(settings.host, settings.port)} {
         acceptor_.listen();
     };
 
