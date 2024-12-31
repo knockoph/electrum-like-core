@@ -64,5 +64,5 @@ Run Python tests:
 
 ```bash
 # in repository
-poetry run pytest tests
+poetry run pytest -s tests
 ```
